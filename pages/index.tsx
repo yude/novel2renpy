@@ -67,9 +67,13 @@ export default function Home() {
     character_list = character_list.filter(function (e) { return e !== 'ナレーション' })
     character_list = character_list.filter(function (e) { return e !== '' })
 
+    if (value !== "") {
+      render_lines += "# キャラクターを定義\n"
+    }
     for (let i = 0; i < character_list.length; i++) {
       const index = character.findIndex((item) => item.name === character_list[i])
       if (index == -1) {
+        render_lines += "define " + character_list[i] + " = Character('" + character_list[i] + "')\n"
         setCharacter(
           (p) => ([
             ...p,
@@ -80,7 +84,17 @@ export default function Home() {
             }
           ])
         )
+      } else {
+        if (character[index].renpy == "") {
+          render_lines += "define " + character[index].name + " = Character('" + character_list[i] + "')\n"
+        } else {
+          render_lines += "define " + character[index].renpy + " = Character('" + character_list[i] + "')\n"
+        }
       }
+    }
+
+    if (value !== "") {
+      render_lines += "\n# ストーリーの記述\n"
     }
 
     // render lines
