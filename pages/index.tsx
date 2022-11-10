@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
-  let [value, setValue] = useState('default');
+  let [value, setValue] = useState('');
   let [temp, setTemp] = useState('aaaa');
 
   let [character, setCharacter] = useState([{ name: "ナレーション", renpy: "narrator" }])
@@ -154,6 +154,7 @@ export default function Home() {
               })}
             </tbody>
           </Table>
+          <hr />
         </div>
       </main>
     </div>
