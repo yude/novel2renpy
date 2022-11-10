@@ -82,7 +82,9 @@ export default function Home() {
     character_list = character_list.filter(function (e) { return e !== '' })
 
     if (value !== "") {
+      const index = character.indexOf(character.filter(obj => obj.name == "ナレーション")[0])
       render_lines += "# キャラクターを定義\n"
+      render_lines += "define " + character[index].renpy + " = Character('')\n"
     }
     for (let i = 0; i < character_list.length; i++) {
       const index = character.findIndex((item) => item.name === character_list[i])
