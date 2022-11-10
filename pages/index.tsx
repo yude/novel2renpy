@@ -49,16 +49,30 @@ export default function Home() {
     // parse lines
     temp2 = ""
     for (let i = 0; i < lines.length; i++) {
-      if (lines[i] != "") {
-        if (lines[i].includes("「")) {
-          let position_split = lines[i].indexOf('「')
-          parsed_lines_chara.push(lines[i].slice(0, position_split))
-          parsed_lines_dialogue.push(lines[i].slice(position_split))
-          temp2 += lines[i] + "\n"
-        } else {
-          parsed_lines_chara.push("ナレーション")
-          parsed_lines_dialogue.push(lines[i])
-          temp2 += lines[i] + "\n"
+      const splitters = splitter.split('')
+      let isComment: boolean = false
+      for (let j = 0; j < splitters.length; j++) {
+        if (lines[i].includes(splitters[j])) {
+          isComment = true
+          break
+        }
+      }
+
+      if (isComment) {
+        parsed_lines_chara.push("comment")
+        parsed_lines_dialogue.push(lines[i])
+      } else {
+        if (lines[i] != "") {
+          if (lines[i].includes("「")) {
+            let position_split = lines[i].indexOf('「')
+            parsed_lines_chara.push(lines[i].slice(0, position_split))
+            parsed_lines_dialogue.push(lines[i].slice(position_split))
+            temp2 += lines[i] + "\n"
+          } else {
+            parsed_lines_chara.push("ナレーション")
+            parsed_lines_dialogue.push(lines[i])
+            temp2 += lines[i] + "\n"
+          }
         }
       }
     }
@@ -73,22 +87,27 @@ export default function Home() {
     for (let i = 0; i < character_list.length; i++) {
       const index = character.findIndex((item) => item.name === character_list[i])
       if (index == -1) {
-        render_lines += "define " + character_list[i] + " = Character('" + character_list[i] + "')\n"
-        setCharacter(
-          (p) => ([
-            ...p,
-            {
-              name: character_list[i],
-              renpy: "",
-              index: character.indexOf(character.filter(obj => obj.name == character_list[i])[0])
-            }
-          ])
-        )
+        if (character_list[i] !== "comment") {
+          render_lines += "define " + character_list[i] + " = Character('" + character_list[i] + "')\n"
+
+          setCharacter(
+            (p) => ([
+              ...p,
+              {
+                name: character_list[i],
+                renpy: "",
+                index: character.indexOf(character.filter(obj => obj.name == character_list[i])[0])
+              }
+            ])
+          )
+        }
       } else {
-        if (character[index].renpy == "") {
-          render_lines += "define " + character[index].name + " = Character('" + character_list[i] + "')\n"
-        } else {
-          render_lines += "define " + character[index].renpy + " = Character('" + character_list[i] + "')\n"
+        if (character_list[i] !== "comment") {
+          if (character[index].renpy == "") {
+            render_lines += "define " + character[index].name + " = Character('" + character_list[i] + "')\n"
+          } else {
+            render_lines += "define " + character[index].renpy + " = Character('" + character_list[i] + "')\n"
+          }
         }
       }
     }
@@ -99,17 +118,8 @@ export default function Home() {
 
     // render lines
     for (let i = 0; i < parsed_lines_chara.length; i++) {
-      const splitters = splitter.split('')
-      let isComment: boolean = false
-      for (let j = 0; j < splitters.length; j++) {
-        if (lines[i].includes(splitters[j])) {
-          isComment = true
-          break
-        }
-      }
-
-      if (isComment) {
-        render_lines += "# " + lines[i] + "\n"
+      if (parsed_lines_chara[i] === "comment") {
+        render_lines += "# " + parsed_lines_dialogue[i] + "\n"
       } else {
         // retrieve character name
         if (parsed_lines_chara[i] === "") {
