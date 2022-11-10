@@ -4,8 +4,10 @@ import * as React from "react"
 import { useState } from "react"
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 import styles from '../styles/Home.module.css'
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   let [value, setValue] = useState('default');
@@ -128,7 +130,8 @@ export default function Home() {
               <Form.Control type="email" placeholder="ここに原稿を入力..." as="textarea" onChange={(event) => setValue(event.target.value)} rows={30} />
             </div>
             <div className="col-6">
-              <Form.Control value={temp} disabled placeholder="OOAO" as="textarea" rows={30} />
+              <Form.Control value={temp} disabled placeholder="ここに変換済みのソースコードが表示されます。" as="textarea" rows={30} />
+              <Button variant="primary" className="mt-2" onClick={() => { navigator.clipboard.writeText(temp) }}><FontAwesomeIcon icon={faClipboard} width={20} height={20} /> コピーする</Button>
             </div>
           </div>
         </div>
