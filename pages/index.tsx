@@ -124,10 +124,11 @@ export default function Home() {
 
       <main>
         <h3 className="mt-5">novel2renpy</h3>
+        <h6>ノベルゲームの原稿を Ren'Py のソースコードに変換します。</h6>
         <div className="container mt-5">
           <div className="row">
             <div className="col-6">
-              <Form.Control type="email" placeholder="ここに原稿を入力..." as="textarea" onChange={(event) => setValue(event.target.value)} rows={30} />
+              <Form.Control type="email" placeholder="ここに原稿を入力 または ペースト..." as="textarea" onChange={(event) => setValue(event.target.value)} rows={30} />
             </div>
             <div className="col-6">
               <Form.Control value={temp} disabled placeholder="ここに変換済みのソースコードが表示されます。" as="textarea" rows={30} />
@@ -155,6 +156,7 @@ export default function Home() {
             </tbody>
           </Table>
           <hr />
+          <p>&copy; 2022 yude &lt;i[at]yude.jp&gt;. / <a href="https://github.com/yude/novel2renpy/blob/master/LICENSE">MIT License</a>. / GitHub: <a href="https://github.com/yude/novel2renpy">yude/novel2renpy</a></p>
         </div>
       </main>
     </div>
