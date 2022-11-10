@@ -13,18 +13,24 @@ export default function Home() {
 
   let [character, setCharacter] = useState([{ name: "ナレーション", renpy: "narrator" }])
 
+  // define raw lines
+  let lines: string[] = []
+
+  // define parsed lines
+  let parsed_lines_chara: string[] = []
+  let parsed_lines_dialogue: string[] = []
+
   React.useEffect(() => {
     let temp2: string = value
+    let render_lines: string = ""
     temp2 = temp2.replace(/\t/d, '')
     temp2 = temp2.replace(/\u3000/g, '')
     temp2 = temp2.replace(/	/g, '')
+    lines = temp2.split('\n')
 
-    // define raw lines
-    let lines: string[] = temp2.split('\n')
-
-    // define parsed lines
-    let parsed_lines_chara: string[] = []
-    let parsed_lines_dialogue: string[] = []
+    // reset variables
+    parsed_lines_chara = []
+    parsed_lines_dialogue = []
 
     // parse lines
     temp2 = ""
@@ -57,24 +63,45 @@ export default function Home() {
     character_list = character_list.filter(function (e) { return e !== '' })
 
     for (let i = 0; i < character_list.length; i++) {
-      setCharacter(
-        (p) => ([
-          ...p,
-          {
-            name: character_list[i],
-            renpy: character_list[i],
-            index: character.indexOf({ name: character_list[i], renpy: character_list[i] })
-          }
-        ])
-      )
+      const index = character.findIndex((item) => item.name === character_list[i])
+      if (index == -1) {
+        setCharacter(
+          (p) => ([
+            ...p,
+            {
+              name: character_list[i],
+              renpy: character_list[i],
+              index: character.indexOf({ name: character_list[i], renpy: character_list[i] })
+            }
+          ])
+        )
+      }
     }
 
-    console.log(parsed_lines_chara)
-    // console.log(parsed_lines_dialogue)
+    // render lines
+    for (let i = 0; i < parsed_lines_chara.length; i++) {
+      // retrieve character name
 
-    console.log(character)
-    setTemp(temp2)
-  }, [value])
+      if (parsed_lines_chara[i] === "") {
+        const filtered = character.filter(obj => {
+          return obj.name === "ナレーション"
+        })
+        render_lines += filtered[0].renpy
+      } else {
+        const filtered = character.filter(obj => obj.name == parsed_lines_chara[i])
+        if (filtered[0]) {
+          render_lines += filtered[0].name
+        }
+      }
+
+      // retrieve dialogue
+      render_lines += " \""
+      render_lines += parsed_lines_dialogue[i]
+      render_lines += "\""
+      render_lines += "\n"
+    }
+    setTemp(render_lines)
+  }, [value, character])
 
   return (
     <div className={styles.container}>
@@ -96,22 +123,26 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <Table striped bordered hover className="mt-5">
-          <thead>
-            <tr>
-              <th>キャラクター名</th>
-              <th>Ren'Py での定義</th>
-            </tr>
-          </thead>
-          {/* <tbody>
-            {this.state.character.map(([key, value]) =>
+        <div className="container">
+          <Table striped bordered hover className="mt-5">
+            <thead>
               <tr>
-                <td>${key}</td>
-                <td>${value}</td>
-                <tr />
-              )}
-              </tbody> */}
-        </Table>
+                <th>キャラクター名</th>
+                <th>Ren'Py コード内での定義</th>
+              </tr>
+            </thead>
+            <tbody>
+              {character.map((obj, index) => {
+                return (
+                  <tr key={obj.renpy}>
+                    <td>{obj.name}</td>
+                    <td>{obj.renpy}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </Table>
+        </div>
       </main>
     </div>
   )
