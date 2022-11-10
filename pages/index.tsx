@@ -11,6 +11,7 @@ import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   let [value, setValue] = useState('');
+  let [splitter, setSplitter] = useState('');
   let [temp, setTemp] = useState('aaaa');
 
   let [character, setCharacter] = useState([{ name: "ナレーション", renpy: "narrator" }])
@@ -84,35 +85,48 @@ export default function Home() {
 
     // render lines
     for (let i = 0; i < parsed_lines_chara.length; i++) {
-      // retrieve character name
-      if (parsed_lines_chara[i] === "") {
-        const filtered = character.filter(obj => {
-          return obj.name === "ナレーション"
-        })
-        if (filtered[0].renpy === "") {
-          render_lines += filtered[0].name
-        } else {
-          render_lines += filtered[0].renpy
+      const splitters = splitter.split('')
+      let isComment: boolean = false
+      for (let j = 0; j < splitters.length; j++) {
+        if (lines[i].includes(splitters[j])) {
+          isComment = true
+          break
         }
+      }
+
+      if (isComment) {
+        render_lines += "# " + lines[i] + "\n"
       } else {
-        const filtered = character.filter(obj => obj.name == parsed_lines_chara[i])
-        if (filtered[0]) {
+        // retrieve character name
+        if (parsed_lines_chara[i] === "") {
+          const filtered = character.filter(obj => {
+            return obj.name === "ナレーション"
+          })
           if (filtered[0].renpy === "") {
             render_lines += filtered[0].name
           } else {
             render_lines += filtered[0].renpy
           }
+        } else {
+          const filtered = character.filter(obj => obj.name == parsed_lines_chara[i])
+          if (filtered[0]) {
+            if (filtered[0].renpy === "") {
+              render_lines += filtered[0].name
+            } else {
+              render_lines += filtered[0].renpy
+            }
+          }
         }
-      }
 
-      // retrieve dialogue
-      render_lines += " \""
-      render_lines += parsed_lines_dialogue[i]
-      render_lines += "\""
-      render_lines += "\n"
+        // retrieve dialogue
+        render_lines += " \""
+        render_lines += parsed_lines_dialogue[i]
+        render_lines += "\""
+        render_lines += "\n"
+      }
     }
     setTemp(render_lines)
-  }, [value, character])
+  }, [value, character, splitter])
 
   return (
     <div className={styles.container}>
@@ -136,8 +150,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="container">
-          <Table striped bordered hover className="mt-5">
+        <div className="container mt-4">
+          <Form.Label>コメントとして解釈する行の設定</Form.Label>
+          <Form.Text className="text-muted">
+            &nbsp;次の文字 (記号) が含まれている行は、コメントとして解釈します。
+          </Form.Text>
+          <Form.Control onChange={(event) => setSplitter(event.target.value)} placeholder="連続して入力することで、複数個指定できます。(例: *＊#)" />
+          <Form.Label className="mt-3">キャラクター名と Ren'Py 内のキャラクター定義の対応の設定</Form.Label>
+          <Table striped bordered hover>
             <thead>
               <tr>
                 <th>キャラクター名</th>
@@ -155,6 +175,7 @@ export default function Home() {
               })}
             </tbody>
           </Table>
+
           <hr />
           <p>&copy; 2022 yude &lt;i[at]yude.jp&gt;. / <a href="https://github.com/yude/novel2renpy/blob/master/LICENSE">MIT License</a>. / GitHub: <a href="https://github.com/yude/novel2renpy">yude/novel2renpy</a></p>
         </div>
