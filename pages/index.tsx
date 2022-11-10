@@ -1,8 +1,43 @@
 import Head from 'next/head'
-import Image from 'next/image'
+import * as React from "react"
+import { useState } from "react"
+import Form from 'react-bootstrap/Form';
 import styles from '../styles/Home.module.css'
 
+
 export default function Home() {
+  let [value, setValue] = useState('default');
+  let [temp, setTemp] = useState('aaaa');
+
+  React.useEffect(() => {
+    let temp2: string = value
+    temp2 = temp2.replace(/\t/d, '')
+    temp2 = temp2.replace(/\u3000/g, '')
+    temp2 = temp2.replace(/	/g, '')
+    let lines: string[] = temp2.split('\n')
+    let parsed_lines_chara: string[] = []
+    let parsed_lines_dialogue: string[] = []
+
+    temp2 = ""
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i] != "") {
+        if (lines[i].includes("「")) {
+          let position_split = lines[i].indexOf('「')
+          parsed_lines_chara.push(lines[i].slice(0, position_split))
+          parsed_lines_dialogue.push(lines[i].slice(position_split + 1, -1))
+          temp2 += lines[i] + "\n"
+        } else {
+          parsed_lines_chara.push("ナレーション")
+          parsed_lines_dialogue.push(lines[i])
+          temp2 += lines[i] + "\n"
+        }
+      }
+    }
+    console.log(parsed_lines_chara)
+    console.log(parsed_lines_dialogue)
+    setTemp(temp2)
+  }, [value])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,14 +47,15 @@ export default function Home() {
       </Head>
 
       <main>
-        <div className="container">
+        <h3 className="mt-5">novel2renpy</h3>
+        <div className="container mt-5">
           <div className="row">
-          <div className="col-6">
-            aa
-          </div>
-          <div className="col-6">
-          aa
-          </div>
+            <div className="col-6">
+              <Form.Control type="email" placeholder="ここに原稿を入力..." as="textarea" onChange={(event) => setValue(event.target.value)} rows={30} />
+            </div>
+            <div className="col-6">
+              <Form.Control value={temp} disabled type="email" placeholder="OOAO" as="textarea" rows={30} />
+            </div>
           </div>
         </div>
       </main>
