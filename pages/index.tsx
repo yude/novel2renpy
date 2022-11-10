@@ -20,6 +20,17 @@ export default function Home() {
   let parsed_lines_chara: string[] = []
   let parsed_lines_dialogue: string[] = []
 
+  function updateCharacterRenPy(name: string, new_renpy: string) {
+    const newCharacterState = character.map(obj => {
+      if (obj.name === name) {
+        return { ...obj, renpy: new_renpy }
+      }
+      return obj
+    })
+
+    setCharacter(newCharacterState)
+  }
+
   React.useEffect(() => {
     let temp2: string = value
     let render_lines: string = ""
@@ -38,17 +49,8 @@ export default function Home() {
       if (lines[i] != "") {
         if (lines[i].includes("「")) {
           let position_split = lines[i].indexOf('「')
-          const filtered = character.filter(character => {
-            return character.name === lines[i].slice(0, position_split)
-          })
-          // if (!filtered) {
-          //   console.log("it has")
-          // } else {
-          //   console.log("it does not have")
-          //   addCharacter(lines[i].slice(0, position_split))
-          // }
           parsed_lines_chara.push(lines[i].slice(0, position_split))
-          parsed_lines_dialogue.push(lines[i].slice(position_split + 1, -1))
+          parsed_lines_dialogue.push(lines[i].slice(position_split))
           temp2 += lines[i] + "\n"
         } else {
           parsed_lines_chara.push("ナレーション")
@@ -70,8 +72,8 @@ export default function Home() {
             ...p,
             {
               name: character_list[i],
-              renpy: character_list[i],
-              index: character.indexOf({ name: character_list[i], renpy: character_list[i] })
+              renpy: "",
+              index: character.indexOf(character.filter(obj => obj.name == character_list[i])[0])
             }
           ])
         )
@@ -81,16 +83,23 @@ export default function Home() {
     // render lines
     for (let i = 0; i < parsed_lines_chara.length; i++) {
       // retrieve character name
-
       if (parsed_lines_chara[i] === "") {
         const filtered = character.filter(obj => {
           return obj.name === "ナレーション"
         })
-        render_lines += filtered[0].renpy
+        if (filtered[0].renpy === "") {
+          render_lines += filtered[0].name
+        } else {
+          render_lines += filtered[0].renpy
+        }
       } else {
         const filtered = character.filter(obj => obj.name == parsed_lines_chara[i])
         if (filtered[0]) {
-          render_lines += filtered[0].name
+          if (filtered[0].renpy === "") {
+            render_lines += filtered[0].name
+          } else {
+            render_lines += filtered[0].renpy
+          }
         }
       }
 
@@ -134,9 +143,9 @@ export default function Home() {
             <tbody>
               {character.map((obj, index) => {
                 return (
-                  <tr key={obj.renpy}>
+                  <tr key={index}>
                     <td>{obj.name}</td>
-                    <td>{obj.renpy}</td>
+                    <td><Form.Control placeholder={obj.name} onChange={(event) => updateCharacterRenPy(obj.name, event.target.value)} /></td>
                   </tr>
                 )
               })}
