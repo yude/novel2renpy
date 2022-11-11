@@ -238,8 +238,9 @@ export default function Home() {
                   placeholder="ここに原稿を入力 または ペースト..."
                   height="35rem"
                   autoFocus={true}
+                  value={value}
                   extensions={[langs.python()]}
-                  onChange={(value) => setValue(value)}
+                  onChange={(value) => { setValue(value) }}
                 />
               </Tab>
               <Tab eventKey="converted" title="変換後">
@@ -260,6 +261,7 @@ export default function Home() {
                   placeholder="ここに原稿を入力 または ペースト..."
                   height="35rem"
                   autoFocus={true}
+                  value={value}
                   extensions={[langs.python()]}
                   onChange={(value) => setValue(value)}
                 />
