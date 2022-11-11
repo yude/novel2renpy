@@ -5,6 +5,8 @@ import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 import Modal from 'react-bootstrap/Modal';
 import styles from '../styles/Home.module.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -224,26 +226,54 @@ export default function Home() {
               </Card.Text>
             </Card.Body>
           </Card>
-          <div className="row mt-2">
-            <div className="col-6">
-              <CodeMirror
-                placeholder="ここに原稿を入力 または ペースト..."
-                height="35rem"
-                autoFocus={true}
-                extensions={[langs.python()]}
-                onChange={(value) => setValue(value)}
-              />
-            </div>
-            <div className="col-6">
-              <CodeMirror
-                placeholder="ここに変換済みのソースコードが表示されます。"
-                height="35rem"
-                value={temp}
-                readOnly={true}
-                extensions={[langs.python()]}
-              />
-              {/* <Form.Control style={{ fontFamily: "monospace" }} value={temp} readOnly placeholder="ここに変換済みのソースコードが表示されます。" as="textarea" rows={20} /> */}
-              <Button variant="primary" className="mt-2" onClick={() => { navigator.clipboard.writeText(temp) }}><FontAwesomeIcon icon={faClipboard} width={20} height={20} /> コピーする</Button>
+
+          <div className="d-lg-none">
+            <Tabs
+              defaultActiveKey="source"
+              id="input-tabs"
+              className="mt-2"
+            >
+              <Tab eventKey="source" title="変換元">
+                <CodeMirror
+                  placeholder="ここに原稿を入力 または ペースト..."
+                  height="35rem"
+                  autoFocus={true}
+                  extensions={[langs.python()]}
+                  onChange={(value) => setValue(value)}
+                />
+              </Tab>
+              <Tab eventKey="converted" title="変換後">
+                <CodeMirror
+                  placeholder="ここに変換済みのソースコードが表示されます。"
+                  height="35rem"
+                  value={temp}
+                  readOnly={true}
+                  extensions={[langs.python()]}
+                />
+              </Tab>
+            </Tabs>
+          </div>
+          <div className="d-none d-lg-block">
+            <div className="row mt-2">
+              <div className="col-6">
+                <CodeMirror
+                  placeholder="ここに原稿を入力 または ペースト..."
+                  height="35rem"
+                  autoFocus={true}
+                  extensions={[langs.python()]}
+                  onChange={(value) => setValue(value)}
+                />
+              </div>
+              <div className="col-6">
+                <CodeMirror
+                  placeholder="ここに変換済みのソースコードが表示されます。"
+                  height="35rem"
+                  value={temp}
+                  readOnly={true}
+                  extensions={[langs.python()]}
+                />
+                <Button variant="primary" className="mt-2" onClick={() => { navigator.clipboard.writeText(temp) }}><FontAwesomeIcon icon={faClipboard} width={20} height={20} /> コピーする</Button>
+              </div>
             </div>
           </div>
         </div>
