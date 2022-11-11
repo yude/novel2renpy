@@ -169,10 +169,10 @@ export default function Home() {
         <div className="container mt-5">
           <div className="row">
             <div className="col-6">
-              <Form.Control type="email" placeholder="ここに原稿を入力 または ペースト..." as="textarea" onChange={(event) => setValue(event.target.value)} rows={30} />
+              <Form.Control type="email" placeholder="ここに原稿を入力 または ペースト..." as="textarea" onChange={(event) => setValue(event.target.value)} rows={20} />
             </div>
             <div className="col-6">
-              <Form.Control style={{ fontFamily: "monospace" }} value={temp} disabled placeholder="ここに変換済みのソースコードが表示されます。" as="textarea" rows={30} />
+              <Form.Control style={{ fontFamily: "monospace" }} value={temp} disabled placeholder="ここに変換済みのソースコードが表示されます。" as="textarea" rows={20} />
               <Button variant="primary" className="mt-2" onClick={() => { navigator.clipboard.writeText(temp) }}><FontAwesomeIcon icon={faClipboard} width={20} height={20} /> コピーする</Button>
             </div>
           </div>
