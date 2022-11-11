@@ -10,6 +10,8 @@ import styles from '../styles/Home.module.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard, faInfo, faWrench, faSignature, faNoteSticky, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
+import CodeMirror from '@uiw/react-codemirror';
+import { langs } from '@uiw/codemirror-extensions-langs';
 
 export default function Home() {
   let [value, setValue] = useState('');
@@ -224,10 +226,23 @@ export default function Home() {
           </Card>
           <div className="row mt-2">
             <div className="col-6">
-              <Form.Control type="email" placeholder="ここに原稿を入力 または ペースト..." as="textarea" onChange={(event) => setValue(event.target.value)} rows={20} />
+              <CodeMirror
+                placeholder="ここに原稿を入力 または ペースト..."
+                height="35rem"
+                autoFocus={true}
+                extensions={[langs.python()]}
+                onChange={(value) => setValue(value)}
+              />
             </div>
             <div className="col-6">
-              <Form.Control style={{ fontFamily: "monospace" }} value={temp} readOnly placeholder="ここに変換済みのソースコードが表示されます。" as="textarea" rows={20} />
+              <CodeMirror
+                placeholder="ここに変換済みのソースコードが表示されます。"
+                height="35rem"
+                value={temp}
+                readOnly={true}
+                extensions={[langs.python()]}
+              />
+              {/* <Form.Control style={{ fontFamily: "monospace" }} value={temp} readOnly placeholder="ここに変換済みのソースコードが表示されます。" as="textarea" rows={20} /> */}
               <Button variant="primary" className="mt-2" onClick={() => { navigator.clipboard.writeText(temp) }}><FontAwesomeIcon icon={faClipboard} width={20} height={20} /> コピーする</Button>
             </div>
           </div>

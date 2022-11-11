@@ -9,15 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@codemirror/lang-python": "^6.0.4",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@uiw/codemirror-extensions-langs": "^4.13.2",
+    "@uiw/react-codemirror": "^4.13.2",
     "bootstrap": "^5.2.2",
     "next": "13.0.0",
     "react": "18.2.0",
     "react-bootstrap": "^2.6.0",
+    "react-codemirror": "^1.0.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
