@@ -48,18 +48,15 @@ export default function Home() {
     parsed_lines_dialogue = []
 
     // parse lines
-
     const blocks = source.split('\n\n')
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i].split('\n')
       let block_chara_source: string = ""
       let block_chara: string[] = []
       let block_dialogue: string[] = []
-      // console.log(blocks[i])
 
       for (let j = 0; j < block.length; j++) {
         if (block[j] !== "") {
-          // const dialogueIdx: number = block[j].indexOf('「')
           const splitters = splitter.split('')
           let isComment: boolean = false
           if (block[j] !== "") {
@@ -73,17 +70,14 @@ export default function Home() {
             }
 
             if (isComment) { // if this line in block is comment
-              console.log("aaaa")
               block_chara.push("comment")
               block_dialogue.push(block[j])
             } else {
-              // console.log("index j: " + j + ", block j: " + block[j])
               if (block[j].includes("「")) { // if this line in block is dialogue
                 const pos_dialogue: number = block[j].indexOf('「')
                 block_chara.push(block[j].slice(0, pos_dialogue))
                 block_dialogue.push(block[j].slice(pos_dialogue))
               } else {
-                console.log("narration")
                 block_chara.push("ナレーション")
                 block_dialogue.push(block[j])
               }
