@@ -7,7 +7,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import styles from '../styles/Home.module.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard } from "@fortawesome/free-solid-svg-icons";
+import { faClipboard, faInfo } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   let [value, setValue] = useState('');
@@ -84,6 +84,7 @@ export default function Home() {
     if (value !== "") {
       const index = character.indexOf(character.filter(obj => obj.name == "ナレーション")[0])
       render_lines += "# キャラクターを定義\n"
+
       render_lines += "define " + character[index].renpy + " = Character('')\n"
     }
     for (let i = 0; i < character_list.length; i++) {
@@ -203,6 +204,7 @@ export default function Home() {
           </Table>
 
           <hr />
+          <p><FontAwesomeIcon icon={faInfo} width={20} height={20} transform="up-3" /> 入力した内容はすべてブラウザ内で処理され、外部のサーバー等に送信されることはありません。</p>
           <p>&copy; 2022 yude &lt;i[at]yude.jp&gt;. / <a href="https://github.com/yude/novel2renpy/blob/master/LICENSE">MIT License</a>. / GitHub: <a href="https://github.com/yude/novel2renpy">yude/novel2renpy</a></p>
         </div>
       </main>
