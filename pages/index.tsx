@@ -235,7 +235,7 @@ export default function Home() {
         <div className="container mt-4">
           <Modal show={charaModal} onHide={handleCloseCharacterModal}>
             <Modal.Header closeButton>
-              <Modal.Title>キャラクター名と Ren'Py 内のキャラクター定義の対応の設定</Modal.Title>
+              <Modal.Title><FontAwesomeIcon icon={faSignature} width={25} height={25} transform="up-1" /> Ren'Py 内のキャラクター定義の設定</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Table striped bordered hover>
@@ -257,16 +257,11 @@ export default function Home() {
                 </tbody>
               </Table>
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseCharacterModal}>
-                閉じる
-              </Button>
-            </Modal.Footer>
           </Modal>
 
           <Modal show={commentModal} onHide={handleCloseCommentModal}>
             <Modal.Header closeButton>
-              <Modal.Title>コメントとして解釈する行の設定</Modal.Title>
+              <Modal.Title><FontAwesomeIcon icon={faNoteSticky} width={25} height={25} transform="up-1" /> コメントとして解釈する行の設定</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form.Text className="text-muted">
@@ -274,11 +269,6 @@ export default function Home() {
               </Form.Text>
               <Form.Control onChange={(event) => setSplitter(event.target.value)} placeholder="連続して入力することで、複数個指定できます。(例: *＊#)" />
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseCommentModal}>
-                閉じる
-              </Button>
-            </Modal.Footer>
           </Modal>
 
 
