@@ -20,6 +20,7 @@ export default function Home() {
   let lines: string[] = []
 
   // define parsed lines
+  let parent_lines: string[] = []
   let parsed_lines_chara: string[] = []
   let parsed_lines_dialogue: string[] = []
 
@@ -35,45 +36,82 @@ export default function Home() {
   }
 
   React.useEffect(() => {
-    let temp2: string = value
+    let source: string = value
     let render_lines: string = ""
-    temp2 = temp2.replace(/\t/d, '')
-    temp2 = temp2.replace(/\u3000/g, '')
-    temp2 = temp2.replace(/	/g, '')
-    lines = temp2.split('\n')
+    source = source.replace(/\t/d, '')
+    source = source.replace(/\u3000/g, '')
+    source = source.replace(/	/g, '')
+    lines = source.split('\n')
 
     // reset variables
     parsed_lines_chara = []
     parsed_lines_dialogue = []
 
     // parse lines
-    temp2 = ""
-    for (let i = 0; i < lines.length; i++) {
-      const splitters = splitter.split('')
-      let isComment: boolean = false
-      for (let j = 0; j < splitters.length; j++) {
-        if (lines[i].includes(splitters[j])) {
-          isComment = true
-          break
+
+    const blocks = source.split('\n\n')
+    for (let i = 0; i < blocks.length; i++) {
+      const block = blocks[i].split('\n')
+      let block_chara_source: string = ""
+      let block_chara: string[] = []
+      let block_dialogue: string[] = []
+      // console.log(blocks[i])
+
+      for (let j = 0; j < block.length; j++) {
+        if (block[j] !== "") {
+          // const dialogueIdx: number = block[j].indexOf('「')
+          const splitters = splitter.split('')
+          let isComment: boolean = false
+          if (block[j] !== "") {
+
+            // check whether if this line is comment
+            for (let k = 0; k < splitters.length; k++) {
+              if (block[j].includes(splitters[k])) {
+                isComment = true
+                break
+              }
+            }
+
+            if (isComment) { // if this line in block is comment
+              console.log("aaaa")
+              block_chara.push("comment")
+              block_dialogue.push(block[j])
+            } else {
+              // console.log("index j: " + j + ", block j: " + block[j])
+              if (block[j].includes("「")) { // if this line in block is dialogue
+                const pos_dialogue: number = block[j].indexOf('「')
+                block_chara.push(block[j].slice(0, pos_dialogue))
+                block_dialogue.push(block[j].slice(pos_dialogue))
+              } else {
+                console.log("narration")
+                block_chara.push("ナレーション")
+                block_dialogue.push(block[j])
+              }
+            }
+
+          }
+        }
+
+        // retrieve this block's character source
+        for (let j = 0; j < block.length; j++) {
+          if (block_chara[j] !== "") {
+            block_chara_source = block_chara[j]
+            break
+          }
+        }
+
+        // set unknown character to predictable character
+        for (let j = 0; j < block.length; j++) {
+          if (block_chara[j] === "") {
+            block_chara[j] = block_chara_source
+            break
+          }
         }
       }
 
-      if (isComment) {
-        parsed_lines_chara.push("comment")
-        parsed_lines_dialogue.push(lines[i])
-      } else {
-        if (lines[i] != "") {
-          if (lines[i].includes("「")) {
-            let position_split = lines[i].indexOf('「')
-            parsed_lines_chara.push(lines[i].slice(0, position_split))
-            parsed_lines_dialogue.push(lines[i].slice(position_split))
-            temp2 += lines[i] + "\n"
-          } else {
-            parsed_lines_chara.push("ナレーション")
-            parsed_lines_dialogue.push(lines[i])
-            temp2 += lines[i] + "\n"
-          }
-        }
+      for (let j = 0; j < block_chara.length; j++) {
+        parsed_lines_chara.push(block_chara[j])
+        parsed_lines_dialogue.push(block_dialogue[j])
       }
     }
 
