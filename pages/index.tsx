@@ -1,13 +1,15 @@
 import Head from 'next/head'
-import { stringify } from 'querystring';
 import * as React from "react"
 import { useState } from "react"
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Modal from 'react-bootstrap/Modal';
 import styles from '../styles/Home.module.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard, faInfo } from "@fortawesome/free-solid-svg-icons";
+import { faClipboard, faInfo, faWrench, faSignature, faNoteSticky, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons"
 
 export default function Home() {
   let [value, setValue] = useState('');
@@ -15,6 +17,14 @@ export default function Home() {
   let [temp, setTemp] = useState('aaaa');
 
   let [character, setCharacter] = useState([{ name: "ナレーション", renpy: "narrator" }])
+
+  const [charaModal, setCharaModal] = useState(false);
+  const handleCloseCharacterModal = () => setCharaModal(false);
+  const handleShowCharacterModal = () => setCharaModal(true);
+
+  const [commentModal, setCommentModal] = useState(false);
+  const handleCloseCommentModal = () => setCommentModal(false);
+  const handleShowCommentModal = () => setCommentModal(true);
 
   // define raw lines
   let lines: string[] = []
@@ -198,8 +208,21 @@ export default function Home() {
       <main>
         <h3 className="mt-5">novel2renpy</h3>
         <h6>ノベルゲームの原稿を Ren'Py のソースコードに変換します。</h6>
-        <div className="container mt-5">
-          <div className="row">
+        <div className="container mt-2">
+          <Card style={{ width: "100%" }}>
+            <Card.Body>
+              <Card.Title><FontAwesomeIcon icon={faWrench} width={18} height={18} transform="up-1" /> 設定</Card.Title>
+              <Card.Text>
+                <Button variant="primary" onClick={handleShowCharacterModal} className="m-2">
+                  <FontAwesomeIcon icon={faSignature} width={18} height={18} transform="up-1" /> キャラクター名
+                </Button>
+                <Button variant="primary" onClick={handleShowCommentModal} className="m-2">
+                  <FontAwesomeIcon icon={faNoteSticky} width={18} height={18} transform="up-1" /> コメント行
+                </Button>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <div className="row mt-2">
             <div className="col-6">
               <Form.Control type="email" placeholder="ここに原稿を入力 または ペースト..." as="textarea" onChange={(event) => setValue(event.target.value)} rows={20} />
             </div>
@@ -210,36 +233,60 @@ export default function Home() {
           </div>
         </div>
         <div className="container mt-4">
-          <Form.Label>コメントとして解釈する行の設定</Form.Label>
-          <Form.Text className="text-muted">
-            &nbsp;次の文字 (記号) が含まれている行は、コメントとして解釈します。
-          </Form.Text>
-          <Form.Control onChange={(event) => setSplitter(event.target.value)} placeholder="連続して入力することで、複数個指定できます。(例: *＊#)" />
-          <Form.Label className="mt-3">キャラクター名と Ren'Py 内のキャラクター定義の対応の設定</Form.Label>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>キャラクター名</th>
-                <th>Ren'Py コード内での定義</th>
-              </tr>
-            </thead>
-            <tbody>
-              {character.map((obj, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{obj.name}</td>
-                    <td><Form.Control placeholder={obj.name} onChange={(event) => updateCharacterRenPy(obj.name, event.target.value)} /></td>
+          <Modal show={charaModal} onHide={handleCloseCharacterModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>キャラクター名と Ren'Py 内のキャラクター定義の対応の設定</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>キャラクター名</th>
+                    <th>Ren'Py コード内での定義</th>
                   </tr>
-                )
-              })}
-            </tbody>
-          </Table>
+                </thead>
+                <tbody>
+                  {character.map((obj, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{obj.name}</td>
+                        <td><Form.Control placeholder={obj.name} onChange={(event) => updateCharacterRenPy(obj.name, event.target.value)} /></td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </Table>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseCharacterModal}>
+                閉じる
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+          <Modal show={commentModal} onHide={handleCloseCommentModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>コメントとして解釈する行の設定</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Text className="text-muted">
+                &nbsp;次の文字 (記号) が含まれている行は、コメントとして解釈します。
+              </Form.Text>
+              <Form.Control onChange={(event) => setSplitter(event.target.value)} placeholder="連続して入力することで、複数個指定できます。(例: *＊#)" />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseCommentModal}>
+                閉じる
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
 
           <hr />
           <p><FontAwesomeIcon icon={faInfo} width={20} height={20} transform="up-3" /> 入力した内容はすべてブラウザ内で処理され、外部のサーバー等に送信されることはありません。</p>
-          <p>&copy; 2022 yude &lt;i[at]yude.jp&gt;. / <a href="https://github.com/yude/novel2renpy/blob/master/LICENSE">MIT License</a>. / GitHub: <a href="https://github.com/yude/novel2renpy">yude/novel2renpy</a></p>
+          <p>&copy; 2022 yude &lt;i[at]yude.jp&gt;. / <FontAwesomeIcon icon={faHeart} width={18} height={18} transform="up-1" /> <a href="https://github.com/yude/novel2renpy/blob/master/LICENSE">MIT License</a>. / <FontAwesomeIcon icon={faGithub} width={18} height={18} transform="up-1" /> GitHub: <a href="https://github.com/yude/novel2renpy">yude/novel2renpy</a></p>
         </div>
       </main>
-    </div>
+    </div >
   )
 }
